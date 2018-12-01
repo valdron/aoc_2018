@@ -1,0 +1,12 @@
+[package]
+authors = ["valdron <seehofer.paul@gmail.com>"]
+name = "aoc_2018"
+version = "0.1.0"
+
+[lib]
+bench = false
+name = "aoc_2018"
+
+[dependencies]
+aoc-runner = "*"
+aoc-runner-derive = "*"
