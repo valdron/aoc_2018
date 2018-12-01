@@ -2,6 +2,8 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::ops::AddAssign;
 
+use aoc_runner_derive::*;
+
 #[aoc_generator(day1)]
 fn gen_day1(input: &str) -> Vec<i32> {
     input
