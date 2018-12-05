@@ -24,11 +24,12 @@ fn solve_day5_part2(input: &[u8]) -> usize {
 impl<'a> FromIterator<&'a u8> for PolymerStack {
     fn from_iter<I: IntoIterator<Item = &'a u8>>(iter: I) -> Self {
         let iter = iter.into_iter();
-        let mut stack = PolymerStack::with_capacity(iter.size_hint().1.unwrap_or(0));
-        for i in iter {
-            stack.push(*i);
-        }
-        stack
+        let stack = PolymerStack::with_capacity(iter.size_hint().1.unwrap_or(0));
+
+        iter.fold(stack, |mut acc, i| {
+            acc.push(*i);
+            acc
+        })
     }
 }
 
