@@ -3,6 +3,7 @@ use core::str::FromStr;
 use std::collections::HashMap;
 use std::error::Error;
 
+#[derive(Debug)]
 enum Event {
     NewGuard(usize),
     Sleeping(usize),
@@ -50,9 +51,9 @@ fn gen_day4(input: &str) -> Vec<Event> {
 fn solve_day4_part1(input: &[Event]) -> i32 {
     let iter = input.into_iter().skip_while(|s| {
         if let Event::NewGuard(_) = s {
-            true
-        } else {
             false
+        } else {
+            true
         }
     });
     let mut guardid = 0;
@@ -149,6 +150,7 @@ fn test() {
 [1518-11-05 00:55] wakes up";
 
     let input = gen_day4(TEST);
+
     assert_eq!(240, solve_day4_part1(&input));
     assert_eq!(4455, solve_day4_part2(&input));
 }
