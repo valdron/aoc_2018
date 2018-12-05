@@ -14,7 +14,7 @@ fn solve_day5_part2(input: &[u8]) -> usize {
             input
                 .iter()
                 .cloned()
-                .filter(|c| *c | 0b_0010_0000 != i)
+                .filter(|c| !c.eq_ignore_ascii_case(&i))
                 .collect::<PolymerStack>()
                 .0
                 .len()
