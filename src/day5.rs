@@ -3,8 +3,8 @@ use core::iter::FromIterator;
 
 #[aoc(day5, part1)]
 fn solve_day5_part1(input: &[u8]) -> usize {
-    let stack: PolymerStack = input.iter().cloned().collect();
-    stack.0.len()
+    let stack: PolymerStack = input.iter().collect();
+    stack.len()
 }
 
 #[aoc(day5, part2)]
@@ -13,30 +13,34 @@ fn solve_day5_part2(input: &[u8]) -> usize {
         .map(|i| {
             input
                 .iter()
-                .cloned()
                 .filter(|c| !c.eq_ignore_ascii_case(&i))
                 .collect::<PolymerStack>()
-                .0
                 .len()
         })
         .min()
         .unwrap()
 }
 
-impl FromIterator<u8> for PolymerStack {
-    fn from_iter<I: IntoIterator<Item = u8>>(iter: I) -> Self {
+impl<'a> FromIterator<&'a u8> for PolymerStack {
+    fn from_iter<I: IntoIterator<Item = &'a u8>>(iter: I) -> Self {
         let iter = iter.into_iter();
-        let mut stack = PolymerStack(Vec::with_capacity(iter.size_hint().1.unwrap_or(0)));
+        let mut stack = PolymerStack::with_capacity(iter.size_hint().1.unwrap_or(0));
         for i in iter {
-            stack.push(i);
+            stack.push(*i);
         }
         stack
     }
 }
 
-struct PolymerStack(pub Vec<u8>);
+struct PolymerStack(Vec<u8>);
 
 impl PolymerStack {
+    fn with_capacity(cap: usize) -> Self {
+        Self {
+            0: Vec::with_capacity(cap),
+        }
+    }
+
     fn push(&mut self, c: u8) {
         match self.0.last() {
             Some(&top_char) if top_char == c ^ 32 => {
@@ -45,15 +49,15 @@ impl PolymerStack {
             _ => self.0.push(c),
         }
     }
+
+    fn len(&self) -> usize {
+        self.0.len()
+    }
 }
 
 #[test]
 fn test_stack() {
-    let mut stack = PolymerStack(vec![]);
+    let stack = "dabAcCaCBAcCcaDA".bytes().collect::<PolymerStack>();
 
-    for c in "dabAcCaCBAcCcaDA".bytes() {
-        stack.push(c)
-    }
-
-    assert_eq!(stack.0.len(), 10);
+    assert_eq!(stack.len(), 10);
 }
