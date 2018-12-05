@@ -57,7 +57,7 @@ impl PolymerStack {
 
 #[test]
 fn test_stack() {
-    let stack = "dabAcCaCBAcCcaDA".bytes().collect::<PolymerStack>();
+    let stack = b"dabAcCaCBAcCcaDA".iter().collect::<PolymerStack>();
 
     assert_eq!(stack.len(), 10);
 }
