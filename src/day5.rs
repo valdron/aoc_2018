@@ -1,45 +1,49 @@
 use aoc_runner_derive::*;
+use core::iter::FromIterator;
 
 #[aoc(day5, part1)]
 fn solve_day5_part1(input: &[u8]) -> usize {
-    let mut stack = PolymerStack(vec![]);
-    for c in input.into_iter().filter(|c| c.is_ascii_alphabetic()) {
-        stack.push(*c);
-    }
+    let stack: PolymerStack = input.iter().cloned().collect();
     stack.0.len()
 }
 
 #[aoc(day5, part2)]
 fn solve_day5_part2(input: &[u8]) -> usize {
-    let mut min = usize::max_value();
-    for i in b'a'..=b'z' {
-        let mut stack = PolymerStack(vec![]);
-        for c in input
-            .into_iter()
-            .filter(|c| c.is_ascii_alphabetic() && c != &&i && c != &&i.to_ascii_uppercase())
-        {
-            stack.push(*c);
+    (b'a'..=b'z')
+        .map(|i| {
+            input
+                .iter()
+                .cloned()
+                .filter(|c| *c | 0b_0010_0000 != i)
+                .collect::<PolymerStack>()
+                .0
+                .len()
+        })
+        .min()
+        .unwrap()
+}
+
+impl FromIterator<u8> for PolymerStack {
+    fn from_iter<I: IntoIterator<Item = u8>>(iter: I) -> Self {
+        let iter = iter.into_iter();
+        let mut stack = PolymerStack(Vec::with_capacity(iter.size_hint().1.unwrap_or(0)));
+        for i in iter {
+            stack.push(i);
         }
-        if stack.0.len() < min {
-            min = stack.0.len()
-        }
+        stack
     }
-    min
 }
 
 struct PolymerStack(pub Vec<u8>);
 
 impl PolymerStack {
     fn push(&mut self, c: u8) {
-        if let Some(&top_char) = self.0.last() {
-            if top_char != c
-                && (top_char == c.to_ascii_lowercase() || top_char == c.to_ascii_uppercase())
-            {
+        match self.0.last() {
+            Some(&top_char) if top_char == c ^ 32 => {
                 self.0.pop();
-                return;
             }
+            _ => self.0.push(c),
         }
-        self.0.push(c);
     }
 }
 
